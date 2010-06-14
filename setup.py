@@ -21,6 +21,6 @@ setup(
       url = 'http://code.google.com/p/sorethumb',
       download_url = 'http://code.google.com/p/sorethumb/downloads/list',
       classifiers = classifiers,
-      maintianer = "Will McGugan",
+      maintainer = "Will McGugan",
       maintainer_email = "will@willmcgugan.com"
 )
