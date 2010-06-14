@@ -1,0 +1,128 @@
+{% load sorethumb %}
+<html>
+<head>
+
+<title>Sorethumb Test</title>
+
+<style type="text/css">
+	
+body {
+	background-color:#fff;
+	font-family:Verdana,sans-serif;
+}
+	
+.content {
+	width:800px;
+	margin:0 auto;
+}
+	
+ul.examples {
+	list-style-type:none;
+	margin:0px;
+	padding:0px;
+}
+	
+ul.examples li {
+		
+	padding:8px;
+	background-color:#A2B4EE;
+	border-left:2px solid #A2B4EE;
+	border-right:2px solid #A2B4EE;
+	
+	border-top:4px solid #A2B4EE;
+	border-bottom:4px solid #A2B4EE;
+	margin:16px 0px;	
+	
+	background-color:#DBE3FF;
+	
+}
+	
+h2 {
+	margin:0px;
+	color:#333;
+	font-weight:bold;
+	text-shadow: 0px 1px 0 #fff;
+}
+
+li .thumb {
+	float:left;
+	width:130px;
+	height:110px;
+}
+	
+li .thumb img {
+	float:left;
+}
+	
+li .explanation {
+	float:left;
+	margin-left:16px;
+	width:600px;
+}
+	
+.clear {
+	clear:both;
+	width:90%;
+}
+	
+p {
+	margin:0px;
+	padding:0px;
+	text-shadow: 0px 1px 0 #fff;
+	font-size:17px;
+	color:#555;
+}
+
+pre {
+	
+	background-color:#fff;
+	border:1px dashed #A2B4EE;
+	padding:4px;
+	overflow:auto;
+}
+	
+</style>
+		
+</head>
+<body>
+	
+	<div class="content">
+		
+		<h1>Sorethumb Examples</h1>
+		
+		<div class="upload">
+			
+			<form action='.' method="post" enctype="multipart/form-data">
+				<input type="file" name="file">				
+				<button type="submit">Upload</button>						
+			</form>
+			
+		</div>
+	
+	
+		{% if dbobject %}		
+		<ul class="examples">
+			
+			{% for example in examples %}
+			<li>			
+				<div class="thumb">
+					<img src="{{ dbobject.image_file|sorethumb:example.thumb }}" />
+				</div>
+				<div class="explanation">
+					<h2>{{ example.title }}</h2>
+					<p>{{ example.description|safe }}</p>
+					{% if example.code %}
+					<pre>{{ example.code }}</pre>
+					{% endif %}
+				</div>
+				<div class="clear"></div>
+			</li>
+			{% endfor %}
+			
+		</ul>
+		{% endif %}
+		
+	</div>	
+		
+</body>
+</html>
