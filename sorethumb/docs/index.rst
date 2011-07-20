@@ -16,9 +16,9 @@ Sore Thumb was originally written for http://2degreesnetwork.com, and has been u
 Introduction
 ============
 
-Thumbnails are declared in Sore Thumb with a thumbnail specification class which defines which filters should be applied to the original image, and some other pieces of information to control the thumbnail output.
+Thumbnails are declared in Sore Thumb with a thumbnail specification class which defines the filters that should be applied to the original image, and some other pieces of information to control the thumbnail output.
 
-Here's an example of a thumbnail declaration that produces a 120x100 thumbnail with curved corners and a gray edge::
+Here's an example of a thumbnail declaration that produces a 120x100 pixel thumbnail with curved corners and a gray edge::
 
     from sorethumb.djangothumbnail import DjangoThumbnail
     from sorethumb.filters.defaultfilters import ThumbnailFilter

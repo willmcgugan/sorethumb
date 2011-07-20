@@ -184,7 +184,7 @@ class Thumbnail(object):
             pass
         
         try:
-            img = Image.open(image_path).convert('RGB')
+            img = Image.open(image_path)
         except (OSError, IOError), e:
             # If the image doesn't exist, replace it with a pink square
             # This should only occur when the media isn't up to date
