@@ -137,7 +137,7 @@ class Thumbnail(object):
         img = Image.new("RGB", (100, 100), (255, 0, 255))
         return img
 
-    def process(self, image_path):
+    def process(self, image_path, format=None):
 
         """ Produces a thumbnail from a given path by running it through each
         registered filter in turn (if the thumbnail doesn't already exist).
@@ -165,7 +165,9 @@ class Thumbnail(object):
 
         # Build a destination path from the filter name
         output_dir = os.path.join(path, self._dir_name)
-        ext = '.thumb.' + self.processor_data.get('format', 'jpg').lstrip('.')
+        if format is None:
+            format = self.processor_data.get('format', 'jpg')
+        ext = '.thumb.' + format.lstrip('.')
         output_path = url_join(output_dir, input_name + ext)
                 
 
