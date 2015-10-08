@@ -43,10 +43,10 @@ class ThumbnailBase(type):
         parents = [b for b in bases if isinstance(b, ThumbnailBase)]
         if not parents:
             return type.__new__(cls, name, bases, attrs)
-        
+
         if 'name' not in attrs:
             attrs['name'] = _camel_to_lower(name)
-        
+
         def check_get(name):
             """ Retrieves a value from attrs or throws an error if it does
             not exist. """
@@ -58,9 +58,9 @@ class ThumbnailBase(type):
         thumb_version = str(attrs.get('version', '1'))
 
         # Find all the filters and store them in a list
-        # Also store the extra fields in processor_data        
+        # Also store the extra fields in processor_data
         processor_data = {}
-        for k, v in attrs.iteritems():            
+        for k, v in attrs.iteritems():
             if not k.startswith('__'):
                 processor_data[k] = v
 
@@ -68,22 +68,22 @@ class ThumbnailBase(type):
         if 'Settings' in attrs:
             settings = dict([(k, v)
                              for k, v in attrs['Settings'].__dict__.iteritems()
-                                if not k.startswith('_')])    
-        
+                                if not k.startswith('_')])
+
         filters = attrs.get('filters', [])
-        
+
         processor_data.update(name = thumb_name,
                               filters = filters)
-        
+
         processor_class = type.__new__(cls, name, bases, attrs)
-        
+
         thumb_obj = processor_class(thumb_name, thumb_version, processor_data)
-        
+
         thumb_obj.settings = settings
         ThumbnailBase.thumb_processors[thumb_name] = thumb_obj
 
         return processor_class
-        
+
 
 
 class Thumbnail(object):
@@ -93,10 +93,10 @@ class Thumbnail(object):
     It also exposes the basic API to retrieve processors from the global
     registry. Generally though, the 'sorethumb' django tag should be used.
 
-    """    
+    """
 
-    def get_setting(self, name, default=None):        
-        return self.settings.get(name, default)                                       
+    def get_setting(self, name, default=None):
+        return self.settings.get(name, default)
 
     def __init__(self, name, version, processor_data):
         self.name = name
@@ -110,7 +110,7 @@ class Thumbnail(object):
         if name not in ThumbnailBase.thumb_processors:
             raise ThumbError("'%s' is not a registered thumb processor" % name)
         return ThumbnailBase.thumb_processors[name]
-        
+
     @classmethod
     def render(self, processor_name, image_path):
         processor = self.get_processor(processor_name)
@@ -119,7 +119,7 @@ class Thumbnail(object):
 
     def _get_dir_name(self):
         """ Gets a string that identifies the sequence of filters. """
-        
+
         def get_filter_name(filter):
             if hasattr(filter, 'name'):
                 return filter.name
@@ -127,10 +127,10 @@ class Thumbnail(object):
 
         filter_params = '.'.join([get_filter_name(filter) + ':' + repr(filter.get_params())
                                   for filter in self.filters])
-        filter_hash = hashlib.md5(filter_params).hexdigest()[::2]        
+        filter_hash = hashlib.md5(filter_params).hexdigest()[::2]
         name = "%s.%s.v%s" % (self.name, filter_hash, self.version)
         return name
-        
+
     def get_missing_image(self):
         """Return a substitute image if the given image path does not exist
         or can not be read. May be overriden for different behaviour."""
@@ -143,25 +143,25 @@ class Thumbnail(object):
         registered filter in turn (if the thumbnail doesn't already exist).
         Returns the url path to the the thumbnail.
 
-        """        
+        """
         def url_join(u1, u2):
             return '/'.join((u1.rstrip('/'), u2.lstrip('/')))
-                  
-        image_path = image_path or ''                     
-        image_root = self.get_setting('SORETHUMB_IMAGE_ROOT') or ''                
-        input_name = image_path[len(image_root):].lstrip('/')    
-                                                    
-        if not input_name or not image_path:            
+
+        image_path = image_path or ''
+        image_root = self.get_setting('SORETHUMB_IMAGE_ROOT') or ''
+        input_name = image_path[len(image_root):].lstrip('/')
+
+        if not input_name or not image_path:
             input_name = "__default"
-            default_image = self.get_setting('SORETHUMB_DEFAULT_IMAGE')            
-            image_path = self.processor_data.get('default', default_image)                    
-            
+            default_image = self.get_setting('SORETHUMB_DEFAULT_IMAGE')
+            image_path = self.processor_data.get('default', default_image)
+
         if not image_path:
             raise ThumbError('No path to original, and SORETHUMB_DEFAULT_IMAGE is not set')
 
         path = self.get_setting('SORETHUMB_OUTPUT_PATH')
         if not path:
-            raise ThumbError('SORETHUMB_OUTPUT_PATH is required')        
+            raise ThumbError('SORETHUMB_OUTPUT_PATH is required')
 
         # Build a destination path from the filter name
         output_dir = os.path.join(path, self._dir_name)
@@ -169,7 +169,7 @@ class Thumbnail(object):
             format = self.processor_data.get('format', 'jpg')
         ext = '.thumb.' + format.lstrip('.')
         output_path = url_join(output_dir, input_name + ext)
-                
+
 
         url_root = self.get_setting('SORETHUMB_URL_ROOT')
         url_path = os.path.join(url_root, url_join(self._dir_name, input_name + ext))
@@ -184,7 +184,7 @@ class Thumbnail(object):
             os.makedirs(output_dir)
         except OSError:
             pass
-        
+
         try:
             img = Image.open(image_path)
         except (OSError, IOError), e:
