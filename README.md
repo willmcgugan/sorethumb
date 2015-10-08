@@ -1,5 +1,5 @@
 # Sorethumb
-Thumbnail image processing, with Django integration.
+Thumbnail image processing library, with Django integration.
 
 ## Installation
 
