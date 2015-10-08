@@ -12,7 +12,7 @@ setup(
     author_email='will@willmcgugan.com',
     maintainer='Will McGugan',
     maintainer_email='will@willmcgugan.com',
-    url='http://code.google.com/p/sorethumb',
+    url='https://github.com/willmcgugan/sorethumb',
     classifiers=[
         'Framework :: Django',
         'Intended Audience :: Developers',
