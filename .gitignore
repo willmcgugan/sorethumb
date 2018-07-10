@@ -1,3 +1,4 @@
 build
 .mypy_cache
 *.egg-info
+test.db
