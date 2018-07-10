@@ -19,7 +19,7 @@ def parse_color(col):
     values. Any values which are not strings, are passed through unaltered.
 
     """
-    if isinstance(col, basestring):
+    if isinstance(col, (bytes, str)):
         col = col.lstrip('#')
         try:
             if len(col) == 6:
@@ -28,7 +28,7 @@ def parse_color(col):
                 return tuple([int(c, 16) * 17 for c in col])
             else:
                 raise ValueError("html colours must be 3 or 6 hex characters")
-        except ValueError, e:
+        except ValueError as e:
             raise ValueError("'%s' is not an html colour (%s)" % (col, e.message))
     return col
 
@@ -43,7 +43,7 @@ class Filter(object):
 
     def __init__(self, *args, **kwargs):
         self._params = (args, kwargs)
-        
+
     def get_params(self):
         return self._params
 

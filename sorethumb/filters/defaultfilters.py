@@ -28,7 +28,7 @@ class ThumbnailFilter(Filter):
         """
         :param width: The maximum width of the thumbnail
         :param height: The maximum height of the thumbnail
-        
+
         """
         Filter.__init__(self, width, height)
         self.new_size = (width, height)
@@ -42,10 +42,10 @@ class ResizeFilter(Filter):
 
     """Resizes an image to new dimensions (may change the aspect ratio"""
 
-    def __init__(self, width, height):    
-        """        
+    def __init__(self, width, height):
+        """
         :param width: The required width of the thumbnail
-        :param height: The required height of the thumbnail 
+        :param height: The required height of the thumbnail
         """
         Filter.__init__(self, width, height)
         self.new_size = (width, height)
@@ -81,12 +81,12 @@ class ResizeCanvasFilter(Filter):
                  height,
                  background_color='#000',
                  background_opacity=255):
-        """ 
+        """
         :param width: Width of resized version
         :param height: Height of resized version
         :param background_color: Color for the canvas background
         :param background_opacity: Opacity for canvas background (255 is opaque)
-        
+
         """
         Filter.__init__(self, width, height, background_color, background_opacity)
         self.new_size = (width, height)
@@ -97,12 +97,12 @@ class ResizeCanvasFilter(Filter):
     def __call__(self, img):
         r, g, b = self.background_color
         a = self.background_opacity
-        
+
         new_img = Image.new('RGBA', self.new_size, (r, g, b, a))
         w, h = img.size
         nw, nh = self.new_size
-        x = (nw - w) / 2
-        y = (nh - h) / 2
+        x = int((nw - w) / 2)
+        y = int((nh - h) / 2)
         new_img.paste(img, (x, y))
         return new_img
 
@@ -114,7 +114,7 @@ class OpaqueFilter(Filter):
     def __init__(self, col):
         """
         :param col: The colour of the background as an HTML string or tuple
-        
+
         """
         Filter.__init__(self, col)
         self.col = parse_color(col)
@@ -134,7 +134,7 @@ class VerticalGradientFilter(Filter):
         """
         :param col1: The colour at the top of the image
         :param col2: The colour at the bottom of the image
-        
+
         """
         Filter.__init__(self, col1, col2)
         self.col1 = parse_color(col1)
@@ -148,7 +148,7 @@ class VerticalGradientFilter(Filter):
 
         w, h = img.size
         fh = float(h)
-        for y in xrange(h):
+        for y in range(h):
             i = (y / fh)
             r = r1 + (r2 - r1) * i
             g = g1 + (g2 - g1) * i
@@ -167,7 +167,7 @@ class RectangularCropFilter(Filter):
     def __init__(self, ratio):
         """
         :param ratio: New aspect ratio for the image
-        
+
         """
         Filter.__init__(self, ratio)
         self.ratio = ratio * 1.0
@@ -190,7 +190,7 @@ class RectangularCropFilter(Filter):
                 new_right = new_left + new_width
 
                 new_size = (int(new_left), 0, int(new_right), int(new_height))
-                
+
             else:
                 # we've got an image which is more portrait than the
                 # desired image:
@@ -214,7 +214,7 @@ class FixedWidthFilter(Filter):
         """
         :param width: New width
         :param no_upscale: If True the image will only be scaled down
-        
+
         """
         Filter.__init__(self, width, no_upscale)
         self.width = int(width)
@@ -241,7 +241,7 @@ class FixedHeightFilter(Filter):
         """
         :param height: New height in pixels
         :param no_upscale: If True the image will only be scaled down
-        
+
         """
         Filter.__init__(self, height, no_upscale)
         self.height = int(height)
@@ -266,7 +266,7 @@ class OverlayFilter(Filter):
     def __init__(self, overlay_path):
         """
         :param overlay_path: System path to the overlay image
-        
+
         """
         Filter.__init__(self, overlay_path)
         self.overlay_path = overlay_path
@@ -275,64 +275,64 @@ class OverlayFilter(Filter):
         overlay_img = Image.open(self.overlay_path)
         img.paste(overlay_img, (0, 0), overlay_img)
         return img
-    
+
 
 class MaskFilter(Filter):
     """ Replaces the alpha channel with a new image """
-    
+
     def __init__(self, mask_path):
         """
         :param mask_path: Path to mask image
-        
+
         """
         Filter.__init__(self, mask_path)
         self.mask_path = mask_path
-    
+
     def __call__(self, img):
-                
+
         mask = Image.open(self.mask_path)
         mask = mask.convert('L')
         img.convert('RGBA')
         img.putalpha(mask)
         return img
-        
-        mask = Image.open(self.mask_path)        
+
+        mask = Image.open(self.mask_path)
         img = img.convert("RGBA")
         r, g, b, a = mask.split()
         img.paste(mask, mask=mask)
         img = img.convert('RGB')
         return img
-        
-        
+
+
 class OpacityFilter(Filter):
     """Sets the alpha channel to a given opacity"""
-        
+
     def __init__(self, opacity=.5):
         """
-        :param opacity: A floating point value between 0 and 1, where 0 
-        
+        :param opacity: A floating point value between 0 and 1, where 0
+
         """
         Filter.__init__(self, opacity)
         self.opacity = opacity
-        
+
     def __call__(self, img):
-        opacity = max(0, min(255, int(self.opacity * 255.0)))                    
+        opacity = max(0, min(255, int(self.opacity * 255.0)))
         img.putalpha(opacity)
         return img
-        
-        
+
+
 class GrayscaleFilter(Filter):
     """Converts the image to grayscale"""
-            
+
     def __call__(self, img):
         img = ImageOps.grayscale(img)
         return img
-        
-        
+
+
 class InvertFilter(Filter):
     """Inverts the colours in the image"""
-            
+
     def __call__(self, img):
         return ImageOps.invert(img)
-        
+
 

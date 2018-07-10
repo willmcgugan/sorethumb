@@ -60,14 +60,14 @@ class ThumbnailBase(type):
         # Find all the filters and store them in a list
         # Also store the extra fields in processor_data
         processor_data = {}
-        for k, v in attrs.iteritems():
+        for k, v in attrs.items():
             if not k.startswith('__'):
                 processor_data[k] = v
 
         settings = {}
         if 'Settings' in attrs:
             settings = dict([(k, v)
-                             for k, v in attrs['Settings'].__dict__.iteritems()
+                             for k, v in attrs['Settings'].__dict__.items()
                                 if not k.startswith('_')])
 
         filters = attrs.get('filters', [])
@@ -86,8 +86,7 @@ class ThumbnailBase(type):
 
 
 
-class Thumbnail(object):
-    __metaclass__ = ThumbnailBase
+class Thumbnail(metaclass=ThumbnailBase):
 
     """ This class is used to declare how images are turned in to thumbnails.
     It also exposes the basic API to retrieve processors from the global
@@ -127,7 +126,7 @@ class Thumbnail(object):
 
         filter_params = '.'.join([get_filter_name(filter) + ':' + repr(filter.get_params())
                                   for filter in self.filters])
-        filter_hash = hashlib.md5(filter_params).hexdigest()[::2]
+        filter_hash = hashlib.md5(filter_params.encode('utf-8')).hexdigest()[::2]
         name = "%s.%s.v%s" % (self.name, filter_hash, self.version)
         return name
 
@@ -187,7 +186,7 @@ class Thumbnail(object):
 
         try:
             img = Image.open(image_path)
-        except (OSError, IOError), e:
+        except (OSError, IOError) as e:
             # If the image doesn't exist, replace it with a pink square
             # This should only occur when the media isn't up to date
             img = self.get_missing_image()
@@ -203,7 +202,7 @@ class Thumbnail(object):
             img.save(output_path,
                      quality = self.processor_data.get('quality', 99))
 
-        except (OSError, IOError), e:
+        except (OSError, IOError) as e:
             # Ultra cautious approach to avoid a 500 error
             # If save fails it will be re-attempted next request
             pass

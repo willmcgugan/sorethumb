@@ -14,7 +14,7 @@
 #
 ##############################################################################
 
-from urlparse import urljoin
+from urllib.parse import urljoin
 import os.path
 
 from django.conf import settings
@@ -30,13 +30,13 @@ register = Library()
 @register.filter
 def sorethumb(file_field, processor_name):
     """ Returns the url path to a thumbnail for a given thumbnail processor. """
-        
-    try:        
+
+    try:
         processor = DjangoThumbnail.get_processor(processor_name)
-    except ThumbError, e:
-        raise TemplateSyntaxError(e.message)
-    
-    image_path = os.path.join(settings.MEDIA_ROOT, str(file_field))    
+    except ThumbError as e:
+        raise TemplateSyntaxError(str(e))
+
+    image_path = os.path.join(settings.MEDIA_ROOT, str(file_field))
     path = processor.process(image_path)
 
     return path
